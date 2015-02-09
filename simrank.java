@@ -25,12 +25,18 @@ public class simrank extends GopherSubGraph {
 	private int initflag;
 	
 	private void initialize() {
-		
+		//obtain adjacency matrix of the graph
+
+		//init sim matrix
+
 	}
 	
 	@Override
 	public void compute(List<SubGraphMessage> stuff) {	//changes made here
-				
+		// receive messages
+		// update sim matrix from values in the messages
+		// compute sim values
+		// send out updated sim values or matrix
 		
 	}
 
