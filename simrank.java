@@ -23,24 +23,52 @@ public class simrank extends GopherSubGraph {
 	private long _numVertices;
 	
 	private int initflag;
-	
-	private void initialize() {
-		//obtain adjacency matrix of the graph
+	private Map<Integer, List<Integer>> adj;
 
-		//init sim matrix
+	private void initialize() {
+
+		//obtain adjacency matrix of the graph - is this the best way to do it
+		
+		adj = new HashMap<Integer, LinkedList<Integer>>();
+
+		for (ITemplateVertex vertex : subgraph.vertices()) {
+			adj.put(vertex.getId(), new LinkedList<Long>());
+			for (ITemplateEdge edge : vertex.outEdges()) {	
+				ITemplateVertex sink = edge.getSink(vertex);
+				adj.get(vertex.getId()).add(sink.getId());
+			}
+		}
+
+		SubGraphMessage s1 = new SubGraphMessage(Message.adjlistMessage(adj).toBytes());	// toAdd: message handling method 
+		for (int partitionId : partitions) {
+			sendMessage(partitionId, s1);
+		}
 
 	}
 	
 	@Override
-	public void compute(List<SubGraphMessage> stuff) {	//changes made here
-		// receive messages
-		// update sim matrix from values in the messages
-		// compute sim values
-		// send out updated sim values or matrix
-		
+	public void compute(List<SubGraphMessage> stuff) {	
+		if (superStep == 0) {
+			initialize();
+		}
+		else if (superStep == 1) {
+			//receive messages
+			//decode
+
+			//init sim matrix - identity matrix
+		}
+		else{
+			// receive messages
+			// update sim matrix from values in the messages
+			// compute sim values
+		}
+
+		// send out updated sim values or matrix	
 	}
 
 	
+
+	// taken from pagerank
 	private List<Message> decode(List<SubGraphMessage> stuff) {
 		if (stuff.isEmpty()) {
 			return Collections.emptyList();
